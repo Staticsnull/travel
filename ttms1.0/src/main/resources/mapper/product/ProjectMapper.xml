@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kane.ttms.product.dao.ProjectDao">
+	<!--通过sql标签定义一个sql，其他地方需要的时候 可以include  -->
+	<sql id="findObjectWhere">
+		<where>
+	    	<if test="name!=null and name!=''">
+	    		and name like concat("%",#{name},"%")
+	    	</if>
+	    	<if test="valid!=null">
+	    		and valid=#{valid}
+	    	</if>
+	    </where>
+	</sql>
+	<select id="findObjects" resultType="project">
+		<!-- 定义一个查询操作 order by:放在最后，
+		有了limit 会放在limit之前  -->
+	    <!-- select * from tms_projects order by -->
+	    select * from tms_projects
+	    <include refid="findObjectWhere"></include>
+	     order by createdTime desc
+	    limit #{startIndex},#{pageSize};
+	</select>
+	<!--查询表中总记录数（要根据此数据来计算总页数）  -->
+	<select id="getRowCount" resultType="java.lang.Integer">
+		select count(1) from tms_projects
+		<include refid="findObjectWhere"></include>
+	</select>
+	<!-- collection:参数 open：从哪儿开始；close：从哪儿结束
+		separator：按什么切割字符串，item：变量的名字 必须与#后面的参数一致-->
+	<update id="validById">
+		update tms_projects	set valid=#{valid},modifiedTime=NOW()
+		where id in 
+		  <if test="ids!=null and ids.length>0">
+			<foreach collection="ids" open="(" close=")"
+				separator="," item="i">
+				#{i}
+			</foreach>
+		  </if>
+	</update>
+	<!--parameterType="java.lang.Integer" 自动绑定参数  -->
+	<select id="findObjectById" 
+		resultType="project">
+		select * from tms_projects where id=#{id}
+	</select>
+	<update id="updateObject" 
+	parameterType="project">
+		update tms_projects set name=#{name},code=#{code},
+		beginDate=#{beginDate},endDate=#{endDate},valid=#{valid},note=#{note},
+		modifiedUser=#{modifiedUser},modifiedTime=NOW() where id=#{id};
+	</update>
+	<insert id="insertObject" 
+	parameterType="project">
+		insert into tms_projects values(
+		#{id},#{code},#{name},#{beginDate},#{endDate},
+		#{valid},#{note},NOW(),NOW(),
+		#{createdUser},#{modifiedUser});
+	</insert>
+	<select id="findProjectIdAndName" resultType="map">
+		select id,name from tms_projects where valid=1;
+	</select>
+</mapper> 

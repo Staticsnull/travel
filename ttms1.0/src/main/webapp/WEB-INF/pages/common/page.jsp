@@ -1,0 +1,12 @@
+<%@ page  contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+	<span id="pageId">
+		<a class="first">首页</a>
+		<!-- <a class="start">首页</a> -->
+		<a class="pre">上一页</a>&nbsp;
+		<a class="next">下一页</a>
+		<a class="last">尾页</a>
+		<!-- <a class="end">尾页</a> -->
+		<a class="pageCount">总页数</a>
+		<a class="pageCurrent">当前页</a>
+	</span>

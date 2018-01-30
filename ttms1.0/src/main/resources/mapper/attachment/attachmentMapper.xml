@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kane.ttms.attachment.dao.AttachmentDao">
+	<!-- insertObject -->
+	<insert id="insertObject" parameterType="attachment">
+		insert into tms_attachments (title,fileName,contentType,filePath,
+		fileDisgest,athType,belongId,createdUser,createdTime,modifiedUser,
+		modifiedTime) values(#{title},#{fileName},#{contentType},#{filePath},
+		#{fileDisgest},#{athType},#{belongId},#{createdUser},#{createdTime},
+		#{modifiedUser},NOW());
+	</insert>
+	<!--fileDisgest 根据摘要统计记录个数，统计结果为0，表示没有找到对应摘要的记录 -->
+	<select id="getRowCountByDigest" resultType="java.lang.Integer">
+		select count(1) from tms_attachments where fileDisgest=#{fileDisgest};
+	</select>
+	<select id="findObjectById" resultType="attachment">
+		select * from tms_attachments where id=#{id}
+	</select>
+	<select id="findObjects" resultType="attachment">
+		select * from tms_attachments
+	</select>
+</mapper> 
